@@ -250,8 +250,11 @@ def build_report(account, mall, lottery, prizes_hist=None):
         if points_p:
             worst = min(p["points_back"] for p in points_p)
             lines.append(f"    · 最差情形：全中最低积分奖 → 每抽净亏 {fmt(cost - worst)} 分（-{(cost-worst)/cost*100:.0f}%）")
-        no_blank = "无「谢谢参与」档" if not any("谢谢" in (p['name'] or '') for p in lottery["prizes"]) else "存在「谢谢参与」档"
-        lines.append(f"    · 奖池结构：{no_blank}，即每次抽奖必有回报（最低回报为积分回血）")
+        no_blank = "接口无「谢谢参与」档" if not any("谢谢" in (p['name'] or '') for p in lottery["prizes"]) else "存在「谢谢参与」档"
+        if "无" in no_blank:
+            lines.append(f"    · 奖池结构：{no_blank}——但注意：接口奖池不含空档不代表必中（2026-10-11 实盘已出现 win=false 空抽），空奖可能不落接口数据")
+        else:
+            lines.append(f"    · 奖池结构：{no_blank}")
         if cash_p:
             max_v = max(p["value"] for p in cash_p if p.get("value"))
             lines.append(f"    · 若中最高现金券 ¥{fmt(max_v)}，需为它消费 → 券只对『本来就要吃的人』值钱")
